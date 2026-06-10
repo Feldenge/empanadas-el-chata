@@ -162,13 +162,50 @@ footer{
     color:#ccc;
     margin-top:40px;
 }
+
+.qty-controls{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+}
+.qty-btn{
+    background:#ff9d00;
+    color:white;
+    border:none;
+    border-radius:8px;
+    width:36px;
+    height:36px;
+    cursor:pointer;
+    font-size:20px;
+    font-weight:bold;
+}
+.cart{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    background:#8b0000;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+    max-width:340px;
+    z-index:2000;
+}
+.cart button{
+    margin-top:10px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
 </style>
 </head>
 
 <body>
 
 <header>
-<img src="logo.jpeg" alt="Logo" class="logo">
+<img src="logo.JPEG" alt="Logo" class="logo">
 <p>Empanadas Gourmet hechas con pasión</p>
 </header>
 
@@ -180,7 +217,7 @@ footer{
 </nav>
 
 <section class="container" id="menu">
-<h2 class="section-title">Nuestras <br> <b>Empanadas</b></h2>
+<h2 class="section-title">Nuestro Menú</h2>
 
 <div class="grid">
 
@@ -188,22 +225,38 @@ footer{
 <h3>🥩 Carnes</h3>
 <ul>
 <li>
-<strong>La Deshilachada</strong><br>
+<strong>La Deshilachada</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('La Deshilachada')">-</button>
+<button class="qty-btn" onclick="addItem('La Deshilachada')">+</button>
+</div><br>
 Empanada agridulce.
 <img src="deshilachada.jpeg" alt="La Deshilachada">
 </li>
 
 <li>
 <strong>La Típica</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('La Típica')">-</button>
+<button class="qty-btn" onclick="addItem('La Típica')">+</button>
+</div>
 <img src="tipica.jpeg" alt="La Típica">
 </li>
 
 <li>
 <strong>Criolla</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('Criolla')">-</button>
+<button class="qty-btn" onclick="addItem('Criolla')">+</button>
+</div>
 <img src="criolla.jpeg" alt="Criolla">
 </li>
 
-<li><strong>Sabrosona</strong></li>
+<li><strong>Sabrosona</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('Sabrosona')">-</button>
+<button class="qty-btn" onclick="addItem('Sabrosona')">+</button>
+</div></li>
 </ul>
 <div class="price">$60 c/u</div>
 </div>
@@ -213,15 +266,27 @@ Empanada agridulce.
 <ul>
 <li>
 <strong>Capresse</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('Capresse')">-</button>
+<button class="qty-btn" onclick="addItem('Capresse')">+</button>
+</div>
 <img src="capresee.jpeg" alt="Capresse">
 </li>
 
 <li>
 <strong>La Verde</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('La Verde')">-</button>
+<button class="qty-btn" onclick="addItem('La Verde')">+</button>
+</div>
 <img src="verde.jpeg" alt="La Verde">
 </li>
 
-<li><strong>Sol de Campo</strong></li>
+<li><strong>Sol de Campo</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('Sol de Campo')">-</button>
+<button class="qty-btn" onclick="addItem('Sol de Campo')">+</button>
+</div></li>
 </ul>
 <div class="price">$60 c/u</div>
 </div>
@@ -231,13 +296,25 @@ Empanada agridulce.
 <ul>
 <li>
 <strong>Queso & Panceta</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('Queso & Panceta')">-</button>
+<button class="qty-btn" onclick="addItem('Queso & Panceta')">+</button>
+</div>
 <img src="quesoypanceta.jpeg" alt="Queso y Panceta">
 </li>
 
-<li><strong>Queso & Cebolla</strong></li>
+<li><strong>Queso & Cebolla</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('Queso & Cebolla')">-</button>
+<button class="qty-btn" onclick="addItem('Queso & Cebolla')">+</button>
+</div></li>
 
 <li>
 <strong>Jamón y Queso</strong>
+<div class="qty-controls">
+<button class="qty-btn" onclick="removeItem('Jamón y Queso')">-</button>
+<button class="qty-btn" onclick="addItem('Jamón y Queso')">+</button>
+</div>
 <img src="jamonyqueso.jpeg" alt="Jamón y Queso">
 </li>
 </ul>
@@ -295,6 +372,63 @@ Hacer Pedido
 </div>
 </div>
 </section>
+
+
+<div class="cart">
+<h3>🛒 Tu Pedido</h3>
+<div id="cartItems">Sin productos</div>
+<p><strong>Total: $<span id="total">0</span></strong></p>
+<button onclick="vaciarCarrito()">🗑 Vaciar carrito</button>
+<button onclick="sendWhatsApp()">📱 Finalizar pedido</button>
+</div>
+
+<script>
+const precio = 60;
+let carrito = {};
+
+function addItem(nombre){
+ carrito[nombre]=(carrito[nombre]||0)+1;
+ renderCart();
+}
+
+function removeItem(nombre){
+ if(!carrito[nombre]) return;
+ carrito[nombre]--;
+ if(carrito[nombre] <= 0) delete carrito[nombre];
+ renderCart();
+}
+
+function vaciarCarrito(){
+ carrito={};
+ renderCart();
+}
+
+function renderCart(){
+ let total=0;
+ let txt='';
+
+ for(const item in carrito){
+   total += carrito[item]*precio;
+   txt += item + ' x' + carrito[item] + '<br>';
+ }
+
+ document.getElementById('cartItems').innerHTML = txt || 'Sin productos';
+ document.getElementById('total').textContent = total;
+}
+
+function sendWhatsApp(){
+ let total=0;
+ let mensaje='Hola, quiero pedir:%0A';
+
+ for(const item in carrito){
+   mensaje += '- ' + item + ' x' + carrito[item] + '%0A';
+   total += carrito[item]*precio;
+ }
+
+ mensaje += '%0ATotal: $' + total;
+ window.open('https://wa.me/59897949125?text=' + mensaje,'_blank');
+}
+</script>
 
 <footer>
 <p>© 2026 Empanadas El Chata - Todos los derechos reservados</p>
