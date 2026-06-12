@@ -378,9 +378,26 @@ Hacer Pedido
 <h3>🛒 Tu Pedido</h3>
 <div id="cartItems">Sin productos</div>
 <p><strong>Total: $<span id="total">0</span></strong></p>
+
+<p><strong>Entrega:</strong></p>
+
+<label>
+  <input type="radio" name="entrega" value="domicilio" checked>
+  🚚 A domicilio
+</label>
+
+<br>
+
+<label>
+  <input type="radio" name="entrega" value="local">
+  🏪 Retiro en local
+</label>
+
+<br><br>
+
 <button onclick="vaciarCarrito()">🗑 Vaciar carrito</button>
 <button onclick="sendWhatsApp()">📱 Finalizar pedido</button>
-</div>
+</div>x 
 
 <script>
 const precio = 60;
@@ -417,16 +434,29 @@ function renderCart(){
 }
 
 function sendWhatsApp(){
- let total=0;
- let mensaje='Hola, quiero pedir:%0A';
+ let total = 0;
+ let mensaje = "Hola, quiero pedir:\n\n";
 
  for(const item in carrito){
-   mensaje += '- ' + item + ' x' + carrito[item] + '%0A';
-   total += carrito[item]*precio;
+   mensaje += "- " + item + " x" + carrito[item] + "\n";
+   total += carrito[item] * precio;
  }
 
- mensaje += '%0ATotal: $' + total;
- window.open('https://wa.me/59897949125?text=' + mensaje,'_blank');
+ const entrega =
+ document.querySelector('input[name="entrega"]:checked').value;
+
+ if(entrega === "domicilio"){
+     mensaje += "\nEntrega: A domicilio\n";
+ }else{
+     mensaje += "\nEntrega: Retiro en local\n";
+ }
+
+ mensaje += "\nTotal: $" + total;
+
+ window.open(
+   "https://wa.me/59897949125?text=" + encodeURIComponent(mensaje),
+   "_blank"
+ );
 }
 </script>
 
